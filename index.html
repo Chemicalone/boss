@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boss Raid ⚔️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Crimson Text', Georgia, serif;
+    background: #1a0f2e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #f0e6c8;
+  }
+
+  .title {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffd700;
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: #c4a882;
+    text-align: center;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .boss-card {
+    background: #2d1b4e;
+    border: 2px solid #6b4c9a;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .boss-sprite {
+    font-size: 80px;
+    line-height: 1;
+    margin-bottom: 8px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .boss-name {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: #e8b4ff;
+    margin-bottom: 12px;
+  }
+
+  .hp-bar-container {
+    background: #1a0a2e;
+    border: 1px solid #6b4c9a;
+    border-radius: 999px;
+    height: 22px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .hp-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease;
+  }
+
+  .hp-bar.hp-high { background: linear-gradient(90deg, #44bb44, #77dd77); }
+  .hp-bar.hp-mid  { background: linear-gradient(90deg, #ddaa00, #ffcc44); }
+  .hp-bar.hp-low  { background: linear-gradient(90deg, #e84444, #ff6b6b); }
+
+  .hp-text {
+    font-size: 14px;
+    color: #c4a882;
+    margin-bottom: 16px;
+  }
+
+  .hp-number { font-weight: 600; color: #ffd700; font-size: 16px; }
+
+  .players-online {
+    font-size: 13px;
+    color: #a882c4;
+    margin-bottom: 4px;
+  }
+
+  .timer-text {
+    font-size: 13px;
+    color: #c4a882;
+    font-style: italic;
+  }
+
+  .hit-flash {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: rgba(255, 100, 100, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+
+  .key-prompt {
+    background: #2d1b4e;
+    border: 2px solid #6b4c9a;
+    border-radius: 16px;
+    padding: 18px 20px;
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .prompt-label {
+    font-size: 15px;
+    color: #c4a882;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .key-display {
+    font-family: 'Cinzel', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #ffd700;
+    margin-bottom: 6px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 8px;
+  }
+
+  .key-name {
+    font-size: 16px;
+    color: #e8b4ff;
+    font-style: italic;
+  }
+
+  .arrow-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    max-width: 200px;
+    margin: 18px auto 0;
+  }
+
+  .arrow-btn {
+    background: #3d2660;
+    border: 2px solid #6b4c9a;
+    border-radius: 10px;
+    color: #f0e6c8;
+    font-size: 22px;
+    width: 56px;
+    height: 56px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s, transform 0.1s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .arrow-btn:active { background: #6b4c9a; transform: scale(0.92); }
+  .arrow-btn.correct-flash { background: #2a7a2a; border-color: #44cc44; }
+  .arrow-btn.wrong-flash { background: #7a2a2a; border-color: #cc4444; }
+  .arrow-btn.empty { visibility: hidden; }
+
+  .combo-bar {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 12px;
+    min-height: 34px;
+  }
+
+  .combo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    color: #ffd700;
+  }
+
+  .feed {
+    background: #1a0f2e;
+    border: 1px solid #3d2660;
+    border-radius: 10px;
+    padding: 10px 14px;
+    width: 100%;
+    max-width: 480px;
+    font-size: 13px;
+    color: #a882c4;
+    max-height: 100px;
+    overflow-y: auto;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .feed-item { padding: 2px 0; }
+  .feed-dmg { color: #ff9944; }
+  .feed-kill { color: #ffd700; font-weight: 600; font-style: normal; font-family: 'Cinzel', serif; }
+
+  .music-btn {
+    background: #3d2660;
+    border: 2px solid #6b4c9a;
+    border-radius: 10px;
+    color: #f0e6c8;
+    font-size: 14px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-family: 'Crimson Text', serif;
+    margin-bottom: 16px;
+    transition: background 0.15s;
+  }
+
+  .music-btn:hover { background: #6b4c9a; }
+
+  .dead-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .dead-overlay.visible { display: flex; }
+
+  .dead-title {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    color: #ffd700;
+    margin-bottom: 12px;
+  }
+
+  .dead-sub {
+    font-size: 18px;
+    color: #c4a882;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  .respawn-timer {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    color: #e8b4ff;
+    margin-top: 16px;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #44cc44;
+    margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-dot.offline { background: #cc4444; animation: none; }
+</style>
+</head>
+<body>
+
+<div class="title">⚔️ Boss Raid</div>
+<div class="subtitle">Unisciti agli avventurieri e sconfiggi il boss!</div>
+
+<div class="boss-card" id="bossCard">
+  <div class="hit-flash" id="hitFlash"></div>
+  <span class="boss-sprite" id="bossSprite">🐉</span>
+  <div class="boss-name">Drakarion il Devastatore</div>
+  <div class="hp-bar-container">
+    <div class="hp-bar hp-high" id="hpBar" style="width:100%"></div>
+  </div>
+  <div class="hp-text">
+    <span class="hp-number" id="hpNow">100,000</span> / <span id="hpMax">100,000</span> HP
+  </div>
+  <div class="players-online"><span class="status-dot" id="statusDot"></span><span id="onlineText">Connessione...</span></div>
+  <div class="timer-text" id="timerText"></div>
+</div>
+
+<div class="combo-bar">
+  <div class="combo-text" id="comboText"></div>
+</div>
+
+<div class="key-prompt">
+  <div class="prompt-label">Premi il tasto giusto per attaccare!</div>
+  <div class="key-display" id="keyDisplay">?</div>
+  <div class="key-name" id="keyName">In attesa...</div>
+  <div class="arrow-buttons">
+    <div class="arrow-btn empty"></div>
+    <button class="arrow-btn" id="btnUp"    data-dir="up">▲</button>
+    <div class="arrow-btn empty"></div>
+    <button class="arrow-btn" id="btnLeft"  data-dir="left">◀</button>
+    <button class="arrow-btn" id="btnDown"  data-dir="down">▼</button>
+    <button class="arrow-btn" id="btnRight" data-dir="right">▶</button>
+  </div>
+</div>
+
+<button class="music-btn" id="musicBtn">🔇 Avvia Musica</button>
+
+<div class="feed" id="feed">
+  <div class="feed-item">⏳ Connessione al server...</div>
+</div>
+
+<div class="dead-overlay" id="deadOverlay">
+  <div class="dead-title">🏆 Boss Sconfitto!</div>
+  <div class="dead-sub">Gli avventurieri hanno trionfato!</div>
+  <div class="dead-sub">Il boss rinascerà tra:</div>
+  <div class="respawn-timer" id="respawnCountdown">10:00:00</div>
+  <div class="dead-sub" style="margin-top:16px; font-size:14px;">Aggiorna la pagina quando rinasce 🐉</div>
+</div>
+
+<!-- AUDIO -->
+<audio id="sfxHit"    src="freesound_damage.mp3"  preload="auto"></audio>
+<audio id="sfxMiss"   src="undertale_miss.mp3"    preload="auto"></audio>
+<audio id="sfxDead"   src="lumora_gameover.mp3"   preload="auto"></audio>
+<audio id="bgMusic"   src="bossmusic.mp3"          preload="auto" loop></audio>
+
+<script type="module">
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getDatabase, ref, onValue, runTransaction, get } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCmwUiCNE_dFMIS-r2H02Uh6p6PWueE_z4",
+    authDomain: "bosshp-a73e8.firebaseapp.com",
+    databaseURL: "https://bosshp-a73e8-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "bosshp-a73e8",
+    storageBucket: "bosshp-a73e8.firebasestorage.app",
+    messagingSenderId: "124438643478",
+    appId: "1:124438643478:web:18cccc0391146d15d40637"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  const MAX_HP       = 1000000;
+  const RESPAWN_MS   = 10 * 60 * 60 * 1000;
+  const DAMAGE_BASE  = 120;
+  const DAMAGE_VAR   = 80;
+
+  const DIRECTIONS = [
+    { key: 'up',    arrow: '▲', name: 'Su' },
+    { key: 'down',  arrow: '▼', name: 'Giù' },
+    { key: 'left',  arrow: '◀', name: 'Sinistra' },
+    { key: 'right', arrow: '▶', name: 'Destra' },
+  ];
+
+  const COMBOS = ['Colpo Critico! ⚡', 'Stoccata Fatale! 🗡️', 'Magia Arcana! ✨', 'Attacco Divino! 🌟', 'Devastante! 💥'];
+
+  // Audio
+  const sfxHit  = document.getElementById('sfxHit');
+  const sfxMiss = document.getElementById('sfxMiss');
+  const sfxDead = document.getElementById('sfxDead');
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.4;
+  sfxHit.volume  = 0.7;
+  sfxMiss.volume = 0.7;
+  sfxDead.volume = 0.8;
+
+  let musicPlaying = false;
+
+  document.getElementById('musicBtn').addEventListener('click', () => {
+    if (!musicPlaying) {
+      bgMusic.play();
+      musicPlaying = true;
+      document.getElementById('musicBtn').textContent = '🔊 Musica ON';
+    } else {
+      bgMusic.pause();
+      musicPlaying = false;
+      document.getElementById('musicBtn').textContent = '🔇 Musica OFF';
+    }
+  });
+
+  function playSound(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
+
+  let currentDir = null;
+  let canHit     = true;
+  let currentHp  = MAX_HP;
+  let isDead     = false;
+  let combo      = 0;
+  let bossDeadSoundPlayed = false;
+
+  const bossRef = ref(db, 'boss');
+
+  function pickDirection() {
+    const d = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+    currentDir = d.key;
+    document.getElementById('keyDisplay').textContent = d.arrow;
+    document.getElementById('keyName').textContent    = `Premi: ${d.name}`;
+    canHit = true;
+  }
+
+  function updateHpBar(hp) {
+    const pct = Math.max(0, Math.min(100, (hp / MAX_HP) * 100));
+    const bar = document.getElementById('hpBar');
+    bar.style.width = pct + '%';
+    bar.className = 'hp-bar ' + (pct > 50 ? 'hp-high' : pct > 25 ? 'hp-mid' : 'hp-low');
+    document.getElementById('hpNow').textContent = Math.max(0, hp).toLocaleString();
+    document.getElementById('hpMax').textContent = MAX_HP.toLocaleString();
+  }
+
+  function flashBoss() {
+    const f = document.getElementById('hitFlash');
+    f.style.opacity = '1';
+    setTimeout(() => f.style.opacity = '0', 200);
+  }
+
+  function addFeed(msg, type) {
+    const feed = document.getElementById('feed');
+    const el   = document.createElement('div');
+    el.className = 'feed-item' + (type ? ' feed-' + type : '');
+    el.textContent = msg;
+    feed.prepend(el);
+    while (feed.children.length > 20) feed.removeChild(feed.lastChild);
+  }
+
+  function showCombo() {
+    const ct = document.getElementById('comboText');
+    if (combo >= 3) {
+      ct.textContent = COMBOS[Math.floor(Math.random() * COMBOS.length)];
+    } else {
+      ct.textContent = '';
+    }
+    setTimeout(() => ct.textContent = '', 1200);
+  }
+
+  function checkDeadOverlay(hp, deadSince) {
+    if (hp <= 0 && deadSince) {
+      if (!isDead) {
+        isDead = true;
+        if (!bossDeadSoundPlayed) {
+          bgMusic.pause();
+          musicPlaying = false;
+          document.getElementById('musicBtn').textContent = '🔇 Musica OFF';
+          playSound(sfxDead);
+          bossDeadSoundPlayed = true;
+        }
+      }
+      document.getElementById('deadOverlay').classList.add('visible');
+      updateRespawnTimer(deadSince);
+    } else {
+      isDead = false;
+      bossDeadSoundPlayed = false;
+      document.getElementById('deadOverlay').classList.remove('visible');
+    }
+  }
+
+  function updateRespawnTimer(deadSince) {
+    function tick() {
+      const remaining = Math.max(0, RESPAWN_MS - (Date.now() - deadSince));
+      if (remaining === 0) {
+        document.getElementById('respawnCountdown').textContent = 'Rinascita imminente...';
+        return;
+      }
+      const h = Math.floor(remaining / 3600000);
+      const m = Math.floor((remaining % 3600000) / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('respawnCountdown').textContent =
+        `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      if (isDead) setTimeout(tick, 1000);
+    }
+    tick();
+  }
+
+  async function initBoss() {
+    const snap = await get(bossRef);
+    const now  = Date.now();
+    if (!snap.exists()) {
+      await runTransaction(bossRef, () => ({ hp: MAX_HP, deadSince: null }));
+    } else {
+      const data = snap.val();
+      if (data.hp <= 0 && data.deadSince && (now - data.deadSince) >= RESPAWN_MS) {
+        await runTransaction(bossRef, () => ({ hp: MAX_HP, deadSince: null }));
+      }
+    }
+  }
+
+  onValue(bossRef, (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.val();
+    currentHp  = data.hp ?? MAX_HP;
+    const deadSince = data.deadSince ?? null;
+    updateHpBar(currentHp);
+    checkDeadOverlay(currentHp, deadSince);
+
+    document.getElementById('statusDot').className = 'status-dot';
+    document.getElementById('onlineText').textContent = 'Live — Boss connesso';
+
+    if (!isDead && !currentDir) pickDirection();
+  }, () => {
+    document.getElementById('statusDot').className = 'status-dot offline';
+    document.getElementById('onlineText').textContent = 'Disconnesso';
+  });
+
+  async function doHit(dir) {
+    if (!canHit || isDead) return;
+    const btn = document.querySelector(`[data-dir="${dir}"]`);
+
+    if (dir === currentDir) {
+      canHit = false;
+      combo++;
+      const dmg = Math.floor(DAMAGE_BASE + Math.random() * DAMAGE_VAR + (combo >= 3 ? 50 : 0));
+
+      btn.classList.add('correct-flash');
+      setTimeout(() => btn.classList.remove('correct-flash'), 300);
+      flashBoss();
+      playSound(sfxHit);
+      showCombo();
+
+      await runTransaction(bossRef, (data) => {
+        if (!data) data = { hp: MAX_HP, deadSince: null };
+        if (data.hp <= 0) return;
+        data.hp = Math.max(0, data.hp - dmg);
+        if (data.hp === 0) data.deadSince = Date.now();
+        return data;
+      });
+
+      addFeed(`⚔️ Un avventuriero colpisce per ${dmg} danni!`, 'dmg');
+      if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
+
+      setTimeout(() => pickDirection(), 400);
+    } else {
+      combo = 0;
+      document.getElementById('comboText').textContent = '❌ Mancato!';
+      setTimeout(() => document.getElementById('comboText').textContent = '', 800);
+      btn.classList.add('wrong-flash');
+      setTimeout(() => btn.classList.remove('wrong-flash'), 300);
+      playSound(sfxMiss);
+    }
+  }
+
+  document.querySelectorAll('.arrow-btn[data-dir]').forEach(btn => {
+    btn.addEventListener('click', () => doHit(btn.dataset.dir));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const map = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right' };
+    if (map[e.key]) { e.preventDefault(); doHit(map[e.key]); }
+  });
+
+  initBoss().then(() => pickDirection());
+</script>
+</body>
+</html>
