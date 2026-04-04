@@ -541,18 +541,21 @@
       playSound(sfxHit);
       showCombo();
 
-      await runTransaction(bossRef, (data) => {
-        if (!data) data = { hp: MAX_HP, deadSince: null };
-        if (data.hp <= 0) return;
-        data.hp = Math.max(0, data.hp - dmg);
-        if (data.hp === 0) data.deadSince = Date.now();
-        return data;
-      });
-
-      addFeed(`⚔️ Un avventuriero colpisce per ${dmg} danni!`, 'dmg');
-      if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
-
-      setTimeout(() => pickDirection(), 400);
+      try {
+  await runTransaction(bossRef, (data) => {
+    if (!data) data = { hp: MAX_HP, deadSince: null };
+    if (data.hp <= 0) return;
+    data.hp = Math.max(0, data.hp - dmg);
+    if (data.hp === 0) data.deadSince = Date.now();
+    return data;
+  });
+  addFeed(`⚔️ Un avventuriero colpisce per ${dmg} danni!`, 'dmg');
+  if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
+} catch (e) {
+  console.error('Transazione fallita', e);
+} finally {
+  setTimeout(() => pickDirection(), 400);
+}
     } else {
       combo = 0;
       document.getElementById('comboText').textContent = '❌ Mancato!';
