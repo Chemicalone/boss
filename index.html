@@ -78,7 +78,6 @@
     height: 22px;
     overflow: hidden;
     margin-bottom: 6px;
-    position: relative;
   }
 
   .hp-bar {
@@ -91,25 +90,11 @@
   .hp-bar.hp-mid  { background: linear-gradient(90deg, #ddaa00, #ffcc44); }
   .hp-bar.hp-low  { background: linear-gradient(90deg, #e84444, #ff6b6b); }
 
-  .hp-text {
-    font-size: 14px;
-    color: #c4a882;
-    margin-bottom: 16px;
-  }
-
+  .hp-text { font-size: 14px; color: #c4a882; margin-bottom: 16px; }
   .hp-number { font-weight: 600; color: #ffd700; font-size: 16px; }
 
-  .players-online {
-    font-size: 13px;
-    color: #a882c4;
-    margin-bottom: 4px;
-  }
-
-  .timer-text {
-    font-size: 13px;
-    color: #c4a882;
-    font-style: italic;
-  }
+  .players-online { font-size: 13px; color: #a882c4; margin-bottom: 4px; }
+  .timer-text { font-size: 13px; color: #c4a882; font-style: italic; }
 
   .hit-flash {
     position: absolute;
@@ -132,12 +117,7 @@
     margin-bottom: 16px;
   }
 
-  .prompt-label {
-    font-size: 15px;
-    color: #c4a882;
-    margin-bottom: 12px;
-    font-style: italic;
-  }
+  .prompt-label { font-size: 15px; color: #c4a882; margin-bottom: 12px; font-style: italic; }
 
   .key-display {
     font-family: 'Cinzel', serif;
@@ -152,11 +132,7 @@
     letter-spacing: 8px;
   }
 
-  .key-name {
-    font-size: 16px;
-    color: #e8b4ff;
-    font-style: italic;
-  }
+  .key-name { font-size: 16px; color: #e8b4ff; font-style: italic; }
 
   .arrow-buttons {
     display: grid;
@@ -185,22 +161,11 @@
 
   .arrow-btn:active { background: #6b4c9a; transform: scale(0.92); }
   .arrow-btn.correct-flash { background: #2a7a2a; border-color: #44cc44; }
-  .arrow-btn.wrong-flash { background: #7a2a2a; border-color: #cc4444; }
+  .arrow-btn.wrong-flash   { background: #7a2a2a; border-color: #cc4444; }
   .arrow-btn.empty { visibility: hidden; }
 
-  .combo-bar {
-    width: 100%;
-    max-width: 480px;
-    text-align: center;
-    margin-bottom: 12px;
-    min-height: 34px;
-  }
-
-  .combo-text {
-    font-family: 'Cinzel', serif;
-    font-size: 22px;
-    color: #ffd700;
-  }
+  .combo-bar { width: 100%; max-width: 480px; text-align: center; margin-bottom: 12px; min-height: 34px; }
+  .combo-text { font-family: 'Cinzel', serif; font-size: 22px; color: #ffd700; }
 
   .feed {
     background: #1a0f2e;
@@ -218,7 +183,7 @@
   }
 
   .feed-item { padding: 2px 0; }
-  .feed-dmg { color: #ff9944; }
+  .feed-dmg  { color: #ff9944; }
   .feed-kill { color: #ffd700; font-weight: 600; font-style: normal; font-family: 'Cinzel', serif; }
 
   .music-btn {
@@ -233,71 +198,211 @@
     margin-bottom: 16px;
     transition: background 0.15s;
   }
-
   .music-btn:hover { background: #6b4c9a; }
 
+  /* ── LEADERBOARD ── */
+  .leaderboard {
+    background: #2d1b4e;
+    border: 2px solid #6b4c9a;
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 16px;
+  }
+
+  .lb-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: #ffd700;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #3d2660;
+    font-size: 14px;
+  }
+  .lb-row:last-child { border-bottom: none; }
+
+  .lb-rank {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    min-width: 28px;
+    text-align: center;
+    color: #c4a882;
+  }
+  .lb-rank.gold   { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+
+  .lb-name {
+    flex: 1;
+    color: #f0e6c8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .lb-name.me { color: #e8b4ff; font-weight: 600; }
+
+  .lb-dmg {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #ff9944;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .lb-bar-wrap {
+    width: 80px;
+    height: 6px;
+    background: #1a0a2e;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .lb-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6b4c9a, #e8b4ff);
+    transition: width 0.4s ease;
+  }
+
+  .lb-empty { font-size: 13px; color: #a882c4; font-style: italic; text-align: center; padding: 8px 0; }
+
+  /* ── NICKNAME OVERLAY ── */
+  .nick-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 5, 20, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .nick-overlay.visible { display: flex; }
+
+  .nick-card {
+    background: #2d1b4e;
+    border: 2px solid #6b4c9a;
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .nick-dragon { font-size: 60px; margin-bottom: 12px; display: block; }
+
+  .nick-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    color: #ffd700;
+    margin-bottom: 8px;
+  }
+
+  .nick-sub { font-size: 15px; color: #c4a882; font-style: italic; margin-bottom: 24px; }
+
+  .nick-input {
+    width: 100%;
+    background: #1a0a2e;
+    border: 2px solid #6b4c9a;
+    border-radius: 10px;
+    color: #f0e6c8;
+    font-size: 18px;
+    font-family: 'Cinzel', serif;
+    padding: 10px 14px;
+    text-align: center;
+    margin-bottom: 16px;
+    outline: none;
+  }
+  .nick-input:focus { border-color: #e8b4ff; }
+  .nick-input::placeholder { color: #6b4c9a; font-family: 'Crimson Text', serif; font-style: italic; }
+
+  .nick-btn {
+    background: #6b4c9a;
+    border: none;
+    border-radius: 10px;
+    color: #ffd700;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    padding: 12px 32px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+  }
+  .nick-btn:hover { background: #8a6abc; }
+  .nick-error { color: #ff6b6b; font-size: 13px; margin-top: 8px; min-height: 18px; }
+
+  /* ── DEAD OVERLAY ── */
   .dead-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.88);
     align-items: center;
     justify-content: center;
     flex-direction: column;
     z-index: 100;
     text-align: center;
     padding: 20px;
+    overflow-y: auto;
   }
-
   .dead-overlay.visible { display: flex; }
 
-  .dead-title {
-    font-family: 'Cinzel', serif;
-    font-size: 36px;
-    color: #ffd700;
-    margin-bottom: 12px;
-  }
+  .dead-title { font-family: 'Cinzel', serif; font-size: 36px; color: #ffd700; margin-bottom: 12px; }
+  .dead-sub { font-size: 18px; color: #c4a882; margin-bottom: 8px; font-style: italic; }
+  .respawn-timer { font-family: 'Cinzel', serif; font-size: 28px; color: #e8b4ff; margin-top: 16px; }
 
-  .dead-sub {
-    font-size: 18px;
-    color: #c4a882;
-    margin-bottom: 8px;
-    font-style: italic;
+  /* final leaderboard in dead overlay */
+  .final-lb {
+    background: #2d1b4e;
+    border: 2px solid #6b4c9a;
+    border-radius: 14px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 360px;
+    margin: 20px 0 8px;
   }
-
-  .respawn-timer {
-    font-family: 'Cinzel', serif;
-    font-size: 28px;
-    color: #e8b4ff;
-    margin-top: 16px;
-  }
+  .final-lb-title { font-family: 'Cinzel', serif; font-size: 15px; color: #ffd700; margin-bottom: 10px; text-align: center; }
 
   .status-dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: #44cc44;
     margin-right: 5px;
     animation: pulse 2s infinite;
   }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .status-dot.offline { background: #cc4444; animation: none; }
 </style>
 </head>
 <body>
+
+<!-- NICKNAME OVERLAY -->
+<div class="nick-overlay" id="nickOverlay">
+  <div class="nick-card">
+    <span class="nick-dragon">🐉</span>
+    <div class="nick-title">Boss Raid</div>
+    <div class="nick-sub">Scegli il tuo nome da avventuriero!</div>
+    <input class="nick-input" id="nickInput" maxlength="20" placeholder="es. Arthas, Gandalf..." />
+    <button class="nick-btn" id="nickBtn">Entra nell'arena ⚔️</button>
+    <div class="nick-error" id="nickError"></div>
+  </div>
+</div>
 
 <div class="title">⚔️ Boss Raid</div>
 <div class="subtitle">Unisciti agli avventurieri e sconfiggi il boss!</div>
 
 <div class="boss-card" id="bossCard">
   <div class="hit-flash" id="hitFlash"></div>
-  <span class="boss-sprite" id="bossSprite">🐉</span>
+  <span class="boss-sprite">🐉</span>
   <div class="boss-name">Drakarion il Devastatore</div>
   <div class="hp-bar-container">
     <div class="hp-bar hp-high" id="hpBar" style="width:100%"></div>
@@ -306,7 +411,6 @@
     <span class="hp-number" id="hpNow">100,000</span> / <span id="hpMax">100,000</span> HP
   </div>
   <div class="players-online"><span class="status-dot" id="statusDot"></span><span id="onlineText">Connessione...</span></div>
-  <div class="timer-text" id="timerText"></div>
 </div>
 
 <div class="combo-bar">
@@ -333,23 +437,34 @@
   <div class="feed-item">⏳ Connessione al server...</div>
 </div>
 
+<!-- LIVE LEADERBOARD -->
+<div class="leaderboard">
+  <div class="lb-title">🏆 Classifica Danni</div>
+  <div id="lbList"><div class="lb-empty">Nessun eroe ancora...</div></div>
+</div>
+
+<!-- DEAD OVERLAY -->
 <div class="dead-overlay" id="deadOverlay">
   <div class="dead-title">🏆 Boss Sconfitto!</div>
   <div class="dead-sub">Gli avventurieri hanno trionfato!</div>
+  <div class="final-lb">
+    <div class="final-lb-title">⚔️ Classifica Finale</div>
+    <div id="finalLbList"></div>
+  </div>
   <div class="dead-sub">Il boss rinascerà tra:</div>
   <div class="respawn-timer" id="respawnCountdown">10:00:00</div>
   <div class="dead-sub" style="margin-top:16px; font-size:14px;">Aggiorna la pagina quando rinasce 🐉</div>
 </div>
 
 <!-- AUDIO -->
-<audio id="sfxHit"    src="freesound_damage.mp3"  preload="auto"></audio>
-<audio id="sfxMiss"   src="undertale_miss.mp3"    preload="auto"></audio>
-<audio id="sfxDead"   src="lumora_gameover.mp3"   preload="auto"></audio>
-<audio id="bgMusic"   src="bossmusic.mp3"          preload="auto" loop></audio>
+<audio id="sfxHit"  src="freesound_damage.mp3" preload="auto"></audio>
+<audio id="sfxMiss" src="undertale_miss.mp3"   preload="auto"></audio>
+<audio id="sfxDead" src="lumora_gameover.mp3"  preload="auto"></audio>
+<audio id="bgMusic" src="bossmusic.mp3"         preload="auto" loop></audio>
 
 <script type="module">
-  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getDatabase, ref, onValue, runTransaction, get } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getDatabase, ref, onValue, runTransaction, get, set } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCmwUiCNE_dFMIS-r2H02Uh6p6PWueE_z4",
@@ -364,10 +479,12 @@
   const app = initializeApp(firebaseConfig);
   const db  = getDatabase(app);
 
-  const MAX_HP       = 1000000;
-  const RESPAWN_MS   = 10 * 60 * 60 * 1000;
-  const DAMAGE_BASE  = 120;
-  const DAMAGE_VAR   = 80;
+  document.getElementById('nickOverlay').classList.add('visible');
+
+  const MAX_HP      = 100000;
+  const RESPAWN_MS  = 10 * 60 * 60 * 1000;
+  const DAMAGE_BASE = 120;
+  const DAMAGE_VAR  = 80;
 
   const DIRECTIONS = [
     { key: 'up',    arrow: '▲', name: 'Su' },
@@ -375,7 +492,6 @@
     { key: 'left',  arrow: '◀', name: 'Sinistra' },
     { key: 'right', arrow: '▶', name: 'Destra' },
   ];
-
   const COMBOS = ['Colpo Critico! ⚡', 'Stoccata Fatale! 🗡️', 'Magia Arcana! ✨', 'Attacco Divino! 🌟', 'Devastante! 💥'];
 
   // Audio
@@ -383,30 +499,17 @@
   const sfxMiss = document.getElementById('sfxMiss');
   const sfxDead = document.getElementById('sfxDead');
   const bgMusic = document.getElementById('bgMusic');
-  bgMusic.volume = 0.4;
-  sfxHit.volume  = 0.7;
-  sfxMiss.volume = 0.7;
-  sfxDead.volume = 0.8;
+  bgMusic.volume = 0.4; sfxHit.volume = 0.7; sfxMiss.volume = 0.7; sfxDead.volume = 0.8;
 
   let musicPlaying = false;
-
   document.getElementById('musicBtn').addEventListener('click', () => {
-    if (!musicPlaying) {
-      bgMusic.play();
-      musicPlaying = true;
-      document.getElementById('musicBtn').textContent = '🔊 Musica ON';
-    } else {
-      bgMusic.pause();
-      musicPlaying = false;
-      document.getElementById('musicBtn').textContent = '🔇 Musica OFF';
-    }
+    if (!musicPlaying) { bgMusic.play(); musicPlaying = true; document.getElementById('musicBtn').textContent = '🔊 Musica ON'; }
+    else { bgMusic.pause(); musicPlaying = false; document.getElementById('musicBtn').textContent = '🔇 Musica OFF'; }
   });
+  function playSound(a) { a.currentTime = 0; a.play().catch(()=>{}); }
 
-  function playSound(audio) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
-
+  // State
+  let playerNick = null;
   let currentDir = null;
   let canHit     = true;
   let currentHp  = MAX_HP;
@@ -415,7 +518,67 @@
   let bossDeadSoundPlayed = false;
 
   const bossRef = ref(db, 'boss');
+  const lbRef   = ref(db, 'leaderboard');
 
+  // ── NICKNAME ──
+  function sanitizeNick(n) { return n.trim().replace(/[.#$[\]]/g, ''); }
+
+  document.getElementById('nickBtn').addEventListener('click', confirmNick);
+  document.getElementById('nickInput').addEventListener('keydown', e => { if (e.key === 'Enter') confirmNick(); });
+
+  function confirmNick() {
+    const raw = document.getElementById('nickInput').value;
+    const nick = sanitizeNick(raw);
+    if (!nick || nick.length < 2) {
+      document.getElementById('nickError').textContent = 'Inserisci almeno 2 caratteri!';
+      return;
+    }
+    playerNick = nick;
+    document.getElementById('nickOverlay').classList.remove('visible');
+    initBoss().then(() => pickDirection());
+  }
+
+  // ── LEADERBOARD ──
+  function renderLb(data, containerId) {
+    const container = document.getElementById(containerId);
+    if (!data) { container.innerHTML = '<div class="lb-empty">Nessun eroe ancora...</div>'; return; }
+    const entries = Object.entries(data).sort((a,b) => b[1] - a[1]);
+    const max = entries[0]?.[1] || 1;
+    const medals = ['🥇','🥈','🥉'];
+    const rankClass = ['gold','silver','bronze'];
+    container.innerHTML = entries.map(([name, dmg], i) => {
+      const pct = Math.round((dmg / max) * 100);
+      const isMe = name === playerNick;
+      const rank = i < 3 ? `<span class="lb-rank ${rankClass[i]}">${medals[i]}</span>`
+                         : `<span class="lb-rank">#${i+1}</span>`;
+      return `<div class="lb-row">
+        ${rank}
+        <span class="lb-name${isMe?' me':''}">
+          ${isMe ? '⚔️ ' : ''}${name}
+        </span>
+        <div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:${pct}%"></div></div>
+        <span class="lb-dmg">${dmg.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+  }
+
+  onValue(lbRef, snap => {
+    const data = snap.val();
+    renderLb(data, 'lbList');
+    renderLb(data, 'finalLbList');
+  });
+
+  async function addDamageToLb(dmg) {
+    if (!playerNick) return;
+    const playerRef = ref(db, `leaderboard/${playerNick}`);
+    await runTransaction(playerRef, current => (current || 0) + dmg);
+  }
+
+  async function resetLeaderboard() {
+    await set(lbRef, null);
+  }
+
+  // ── BOSS ──
   function pickDirection() {
     const d = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
     currentDir = d.key;
@@ -441,7 +604,7 @@
 
   function addFeed(msg, type) {
     const feed = document.getElementById('feed');
-    const el   = document.createElement('div');
+    const el = document.createElement('div');
     el.className = 'feed-item' + (type ? ' feed-' + type : '');
     el.textContent = msg;
     feed.prepend(el);
@@ -450,11 +613,7 @@
 
   function showCombo() {
     const ct = document.getElementById('comboText');
-    if (combo >= 3) {
-      ct.textContent = COMBOS[Math.floor(Math.random() * COMBOS.length)];
-    } else {
-      ct.textContent = '';
-    }
+    ct.textContent = combo >= 3 ? COMBOS[Math.floor(Math.random() * COMBOS.length)] : '';
     setTimeout(() => ct.textContent = '', 1200);
   }
 
@@ -463,8 +622,7 @@
       if (!isDead) {
         isDead = true;
         if (!bossDeadSoundPlayed) {
-          bgMusic.pause();
-          musicPlaying = false;
+          bgMusic.pause(); musicPlaying = false;
           document.getElementById('musicBtn').textContent = '🔇 Musica OFF';
           playSound(sfxDead);
           bossDeadSoundPlayed = true;
@@ -482,10 +640,7 @@
   function updateRespawnTimer(deadSince) {
     function tick() {
       const remaining = Math.max(0, RESPAWN_MS - (Date.now() - deadSince));
-      if (remaining === 0) {
-        document.getElementById('respawnCountdown').textContent = 'Rinascita imminente...';
-        return;
-      }
+      if (remaining === 0) { document.getElementById('respawnCountdown').textContent = 'Rinascita imminente...'; return; }
       const h = Math.floor(remaining / 3600000);
       const m = Math.floor((remaining % 3600000) / 60000);
       const s = Math.floor((remaining % 60000) / 1000);
@@ -504,30 +659,29 @@
     } else {
       const data = snap.val();
       if (data.hp <= 0 && data.deadSince && (now - data.deadSince) >= RESPAWN_MS) {
+        await resetLeaderboard();
         await runTransaction(bossRef, () => ({ hp: MAX_HP, deadSince: null }));
       }
     }
   }
 
-  onValue(bossRef, (snap) => {
+  onValue(bossRef, snap => {
     if (!snap.exists()) return;
     const data = snap.val();
-    currentHp  = data.hp ?? MAX_HP;
+    currentHp = data.hp ?? MAX_HP;
     const deadSince = data.deadSince ?? null;
     updateHpBar(currentHp);
     checkDeadOverlay(currentHp, deadSince);
-
     document.getElementById('statusDot').className = 'status-dot';
     document.getElementById('onlineText').textContent = 'Live — Boss connesso';
-
-    if (!isDead && !currentDir) pickDirection();
+    if (!isDead && !currentDir && playerNick) pickDirection();
   }, () => {
     document.getElementById('statusDot').className = 'status-dot offline';
     document.getElementById('onlineText').textContent = 'Disconnesso';
   });
 
   async function doHit(dir) {
-    if (!canHit || isDead) return;
+    if (!canHit || isDead || !playerNick) return;
     const btn = document.querySelector(`[data-dir="${dir}"]`);
 
     if (dir === currentDir) {
@@ -542,20 +696,21 @@
       showCombo();
 
       try {
-  await runTransaction(bossRef, (data) => {
-    if (!data) data = { hp: MAX_HP, deadSince: null };
-    if (data.hp <= 0) return;
-    data.hp = Math.max(0, data.hp - dmg);
-    if (data.hp === 0) data.deadSince = Date.now();
-    return data;
-  });
-  addFeed(`⚔️ Un avventuriero colpisce per ${dmg} danni!`, 'dmg');
-  if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
-} catch (e) {
-  console.error('Transazione fallita', e);
-} finally {
-  setTimeout(() => pickDirection(), 400);
-}
+        await runTransaction(bossRef, data => {
+          if (!data) data = { hp: MAX_HP, deadSince: null };
+          if (data.hp <= 0) return;
+          data.hp = Math.max(0, data.hp - dmg);
+          if (data.hp === 0) data.deadSince = Date.now();
+          return data;
+        });
+        await addDamageToLb(dmg);
+        addFeed(`⚔️ ${playerNick} colpisce per ${dmg} danni!`, 'dmg');
+        if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
+      } catch(e) {
+        console.error('Transazione fallita', e);
+      } finally {
+        setTimeout(() => pickDirection(), 400);
+      }
     } else {
       combo = 0;
       document.getElementById('comboText').textContent = '❌ Mancato!';
@@ -570,12 +725,10 @@
     btn.addEventListener('click', () => doHit(btn.dataset.dir));
   });
 
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', e => {
     const map = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right' };
     if (map[e.key]) { e.preventDefault(); doHit(map[e.key]); }
   });
-
-  initBoss().then(() => pickDirection());
 </script>
 </body>
 </html>
