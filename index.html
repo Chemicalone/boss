@@ -619,6 +619,12 @@
 
   function checkDeadOverlay(hp, deadSince) {
     if (hp <= 0 && deadSince) {
+      const elapsed = Date.now() - deadSince;
+      // Se il boss è morto ma NON è ancora passato il tempo di respawn → redirect al pugnale
+      if (elapsed < RESPAWN_MS) {
+        window.location.href = 'dagger_luce.html';
+        return;
+      }
       if (!isDead) {
         isDead = true;
         if (!bossDeadSoundPlayed) {
@@ -705,7 +711,10 @@
         });
         await addDamageToLb(dmg);
         addFeed(`⚔️ ${playerNick} colpisce per ${dmg} danni!`, 'dmg');
-        if (currentHp - dmg <= 0) addFeed('☠️ Il boss è stato sconfitto! Gloria agli eroi!', 'kill');
+        if (currentHp - dmg <= 0) {
+          addFeed('☠️ Il boss è stato sconfitto! La Scheggia dell\'Alba è tua!', 'kill');
+          setTimeout(() => { window.location.href = 'dagger_luce.html'; }, 3000);
+        }
       } catch(e) {
         console.error('Transazione fallita', e);
       } finally {
