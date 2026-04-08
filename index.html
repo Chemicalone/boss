@@ -381,9 +381,104 @@
   }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .status-dot.offline { background: #cc4444; animation: none; }
+
+  /* ── STUN OVERLAY ── */
+  .stun-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(180, 0, 0, 0.55);
+    z-index: 150;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    pointer-events: all;
+    animation: stunFlicker 0.4s ease-in-out;
+  }
+  .stun-overlay.visible { display: flex; }
+  @keyframes stunFlicker {
+    0%   { opacity: 0; }
+    30%  { opacity: 1; }
+    60%  { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+  .stun-title {
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 0 0 20px #ff0000, 0 2px 4px #000;
+    margin-bottom: 10px;
+  }
+  .stun-sub {
+    font-size: 16px;
+    color: #ffcccc;
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+  .stun-timer {
+    font-family: 'Cinzel', serif;
+    font-size: 64px;
+    color: #fff;
+    text-shadow: 0 0 30px #ff4444;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stun-hint {
+    font-size: 13px;
+    color: #ffaaaa;
+    margin-top: 14px;
+    font-style: italic;
+  }
+
+  /* Boss enrage — sotto 25% HP */
+  .boss-card.enraged {
+    border-color: #ff4444 !important;
+    animation: enrageGlow 1.2s ease-in-out infinite;
+  }
+  @keyframes enrageGlow {
+    0%,100% { box-shadow: 0 0 20px #ff000066; }
+    50%     { box-shadow: 0 0 50px #ff0000cc; }
+  }
+  .boss-card.enraged .boss-sprite {
+    animation: float 3s ease-in-out infinite, enrageFilter 1s ease-in-out infinite;
+  }
+  @keyframes enrageFilter {
+    0%,100% { filter: none; }
+    50%     { filter: drop-shadow(0 0 10px #ff4444) hue-rotate(10deg); }
+  }
+  .enrage-warning {
+    display: none;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: #ff6666;
+    text-align: center;
+    width: 100%;
+    max-width: 480px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    animation: warningBlink 0.9s ease-in-out infinite;
+  }
+  .enrage-warning.visible { display: block; }
+  @keyframes warningBlink {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.2; }
+  }
 </style>
 </head>
 <body>
+
+<!-- STUN OVERLAY -->
+<div class="stun-overlay" id="stunOverlay">
+  <div class="stun-title">🐉 Colpito dal Boss!</div>
+  <div class="stun-sub">Drakarion ti ha tramortito — sei stordito!</div>
+  <div class="stun-timer" id="stunCountdown">10</div>
+  <div class="stun-hint">Attendi per poter attaccare di nuovo...</div>
+</div>
+
+<!-- ENRAGE WARNING -->
+<div class="enrage-warning" id="enrageWarning">⚠️ DRAKARION È IN FURIA — ATTENTO AI CONTRATTACCHI! ⚠️</div>
 
 <!-- NICKNAME OVERLAY -->
 <div class="nick-overlay" id="nickOverlay">
@@ -516,6 +611,47 @@
   let isDead     = false;
   let combo      = 0;
   let bossDeadSoundPlayed = false;
+  let isStunned  = false;  // stordito dal boss
+  let stunTimer  = null;   // riferimento al setInterval dello stun
+
+  const STUN_DURATION = 10; // secondi
+
+  // ── STUN ──
+  function applyStun() {
+    if (isStunned) return; // già stordito, non sovrapporre
+    isStunned = true;
+    canHit    = false;
+    let remaining = STUN_DURATION;
+    document.getElementById('stunCountdown').textContent = remaining;
+    document.getElementById('stunOverlay').classList.add('visible');
+    addFeed(`💥 Drakarion contrattacca! ${playerNick} è stordito per ${STUN_DURATION} secondi!`, 'dmg');
+
+    stunTimer = setInterval(() => {
+      remaining--;
+      document.getElementById('stunCountdown').textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(stunTimer);
+        stunTimer  = null;
+        isStunned  = false;
+        document.getElementById('stunOverlay').classList.remove('visible');
+        addFeed(`✅ ${playerNick} si rialza — pronto a combattere!`);
+        pickDirection();
+      }
+    }, 1000);
+  }
+
+  // ── ENRAGE: aggiorna visuale boss in base agli HP ──
+  function updateEnrageState(hp) {
+    const bossCard = document.getElementById('bossCard');
+    const warning  = document.getElementById('enrageWarning');
+    if (hp > 0 && hp <= MAX_HP / 4) {
+      bossCard.classList.add('enraged');
+      warning.classList.add('visible');
+    } else {
+      bossCard.classList.remove('enraged');
+      warning.classList.remove('visible');
+    }
+  }
 
   const bossRef = ref(db, 'boss');
   const lbRef   = ref(db, 'leaderboard');
@@ -677,6 +813,7 @@
     currentHp = data.hp ?? MAX_HP;
     const deadSince = data.deadSince ?? null;
     updateHpBar(currentHp);
+    updateEnrageState(currentHp);
     checkDeadOverlay(currentHp, deadSince);
     document.getElementById('statusDot').className = 'status-dot';
     document.getElementById('onlineText').textContent = 'Live — Boss connesso';
@@ -727,6 +864,11 @@
       btn.classList.add('wrong-flash');
       setTimeout(() => btn.classList.remove('wrong-flash'), 300);
       playSound(sfxMiss);
+
+      // Se sotto 25% HP il boss contrattacca e stordisce
+      if (currentHp > 0 && currentHp <= MAX_HP / 4) {
+        setTimeout(() => applyStun(), 400);
+      }
     }
   }
 
